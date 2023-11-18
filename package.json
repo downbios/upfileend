@@ -1,0 +1,23 @@
+{
+  "name": "upfile-end",
+  "version": "1.0.0",
+  "description": "upload document files",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/app.js",
+    "dev": "node --watch --no-warnings ./src/app.js"
+  },
+  "keywords": [],
+  "author": "ian Adson",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "ibm-cos-sdk": "^1.13.2",
+    "mongoose": "^7.5.3",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "multer-s3": "^2.9.0"
+  }
+}

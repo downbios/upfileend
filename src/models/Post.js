@@ -1,6 +1,8 @@
+console.log("Início do arquivo Post.js");
+
 const mongoose = require("mongoose");
 const IBM = require("ibm-cos-sdk");
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const { promisify } = require("util");
 
@@ -22,32 +24,32 @@ const PostSchema = new mongoose.Schema({
   },
 });
 
-PostSchema.pre("save", function(){
+PostSchema.pre("save", function() {
   if (!this.url) {
     this.url = `${process.env.APP_URL}/files/${this.key}`;
   }
-
 });
 
-PostSchema.pre("remove", function() {
-  if (process.env.STORAGE_TYPE === "s3") {
-    return cos
-      .deleteObject({
-        Bucket: process.env.BUCKET_NAME,
-        Key: this.key
-      })
-      .promise()
-      .then(response => {
-        console.log(response.status);
-      })
-      .catch(response => {
-        console.log(response.status);
-      });
-  } else {
-    return promisify(fs.unlink)(
-      path.resolve(__dirname, "..", "..", "tmp", "uploads", this.key)
-    );
+console.log("Middleware pre('remove') registrado no esquema.");
+
+PostSchema.pre("remove", async function() {
+  try {
+    console.log("Middleware pre('remove') foi acionado.");
+    console.log("Executando pré-remoção...");
+    console.log("Valor de this.key:", this.key);
+    const filePath = path.resolve(__dirname, "..", "..", "tmp", "uploads", this.key);
+  
+    console.log("Caminho do arquivo a ser deletado:", filePath);
+
+    // Excluindo o arquivo local
+    await fs.unlink(filePath);
+    console.log("Arquivo local removido com sucesso:", filePath);
+  } catch (error) {
+    console.error("Erro ao tentar remover o arquivo:", error);
+    throw error;
   }
 });
+
+console.log("Fim do arquivo Post.js");
 
 module.exports = mongoose.model("Post", PostSchema);
